@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        APP_SERVER = '56.228.12.137' // Replace with your app EC2 public IP
+        APP_SERVER = '13.53.124.245' // Replace with your app EC2 public IP
         SSH_CREDENTIALS = credentials('app-ec2-ssh') // Jenkins SSH credentials ID
     }
     stages {
