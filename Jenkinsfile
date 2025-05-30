@@ -1,18 +1,23 @@
 pipeline {
     agent any
     environment {
-        APP_SERVER_IP = '13.61.5.117'
+        APP_SERVER = '13.53.124.245' // Replace with your app EC2 public IP
+        SSH_CREDENTIALS = credentials('app-ec2-ssh') // Jenkins SSH credentials ID
     }
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/Exhei/jenkins-cicd-demo.git', branch: 'main'
+                git branch: 'main', url: 'https://github.com/exhei/jenkins_cicd_demo.git'
             }
         }
         stage('Build') {
             steps {
                 sh 'npm install'
-                sh 'npm run build'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'npm test'
             }
         }
         stage('Deploy') {
