@@ -24,8 +24,8 @@ pipeline {
             steps {
                 sshagent(credentials: ['app-ec2-ssh']) {
                     sh """
-                        scp -o StrictHostKeyChecking=no -r ./dist/* ec2-user@\${APP_SERVER_IP}:/home/ec2-user/app/
-                        ssh -o StrictHostKeyChecking=no ec2-user@\${APP_SERVER_IP} << 'ENDSSH'
+                        scp -o StrictHostKeyChecking=no -r ./dist/* ec2-user@\${APP_SERVER}:/home/ec2-user/app/
+                        ssh -o StrictHostKeyChecking=no ec2-user@\${APP_SERVER} << 'ENDSSH'
                             npm install -g pm2
                             pm2 stop all || true
                             pm2 start /home/ec2-user/app/index.js --name app
