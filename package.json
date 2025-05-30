@@ -1,11 +1,9 @@
 {
   "name": "jenkins-cicd-demo",
   "version": "1.0.0",
-  "description": "Simple Node.js app for Jenkins CI/CD demo",
-  "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "test": "echo \"No tests implemented\" && exit 0"
+    "build": "mkdir -p dist && cp -r src/* dist/",
+    "start": "node index.js"
   },
   "dependencies": {
     "express": "^4.17.1"
