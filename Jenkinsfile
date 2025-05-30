@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/Exhei/jenkins-cicd-demo.git', branch: 'main'
+                git url: 'https://github.com/Exhei/jenkins_cicd_demo.git', branch: 'main'
             }
         }
         stage('Build') {
