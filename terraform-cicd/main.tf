@@ -4,22 +4,34 @@ provider "aws" {
 
 resource "aws_instance" "jenkins" {
   ami           = "ami-00f34bf9aeacdf007" # Amazon Linux 2023 AMI for eu-north-1
-  instance_type = "t3.micro" # Free Tier eligible
+  instance_type = "t3.micro"
   key_name      = var.key_pair
   security_groups = [aws_security_group.cicd_sg.name]
   user_data = <<-EOF
               #!/bin/bash
-              yum update -y
-              yum install -y java-17-amazon-corretto
-              wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
-              rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
-              yum install -y jenkins
-              systemctl daemon-reload
-              systemctl start jenkins
-              systemctl enable jenkins
-              yum install -y git
-              curl -sL https://rpm.nodesource.com/setup_14.x | bash -
-              yum install -y nodejs
+              set -e
+              exec > /var/log/user-data.log 2>&1
+              sudo yum update -y
+              sudo yum install -y java-11-amazon-corretto
+              sudo wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+              sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+              sudo yum install -y https://mirrors.jenkins.io/redhat-stable/jenkins-2.440.3-1.1.noarch.rpm || echo "Jenkins install failed" >> /var/log/user-data.log
+              sudo systemctl daemon-reload
+              # Wait for systemd to be ready
+              sleep 10
+              for i in {1..10}; do
+                if sudo systemctl start jenkins; then
+                  echo "Jenkins started successfully" >> /var/log/user-data.log
+                  break
+                else
+                  echo "Jenkins start attempt $i failed" >> /var/log/user-data.log
+                  sleep 10
+                fi
+              done
+              sudo systemctl enable jenkins || echo "Jenkins enable failed" >> /var/log/user-data.log
+              sudo yum install -y git
+              sudo curl -sL https://rpm.nodesource.com/setup_14.x | bash -
+              sudo yum install -y nodejs
               EOF
   tags = {
     Name = "JenkinsServer"
@@ -27,17 +39,17 @@ resource "aws_instance" "jenkins" {
 }
 
 resource "aws_instance" "app" {
-  ami           = "ami-00f34bf9aeacdf007" # Amazon Linux 2023 AMI for eu-north-1
-  instance_type = "t3.micro" # Free Tier eligible
+  ami           = "ami-00f34bf9aeacdf007"
+  instance_type = "t3.micro"
   key_name      = var.key_pair
   security_groups = [aws_security_group.cicd_sg.name]
   user_data = <<-EOF
               #!/bin/bash
-              yum update -y
-              curl -sL https://rpm.nodesource.com/setup_14.x | bash -
-              yum install -y nodejs
-              mkdir -p /home/ec2-user/app
-              chown ec2-user:ec2-user /home/ec2-user/app
+              sudo yum update -y
+              sudo curl -sL https://rpm.nodesource.com/setup_14.x | bash -
+              sudo yum install -y nodejs
+              sudo mkdir -p /home/ec2-user/app
+              sudo chown ec2-user:ec2-user /home/ec2-user/app
               EOF
   tags = {
     Name = "AppServer"
