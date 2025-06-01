@@ -19,9 +19,17 @@ pipeline {
             steps {
                 sshagent(credentials: ['app-ec2-ssh']) {
                     sh """
-                        scp -o StrictHostKeyChecking=no -r ./dist/* ec2-user@\${APP_SERVER_IP}:/home/ec2-user/app/
-                        ssh -o StrictHostKeyChecking=no ec2-user@\${APP_SERVER_IP} \\
-                            "sudo npm install -g pm2 && pm2 stop all || true && pm2 start /home/ec2-user/app/index.js --name app"
+                        ssh -o StrictHostKeyChecking=no ec2-user@\${APP_SERVER_IP} 'mkdir -p /home/ec2-user/app'
+
+                        scp -o StrictHostKeyChecking=no -r * ec2-user@\${APP_SERVER_IP}:/home/ec2-user/app/
+
+                        ssh -o StrictHostKeyChecking=no ec2-user@\${APP_SERVER_IP} '
+                            cd /home/ec2-user/app &&
+                            npm install &&
+                            sudo npm install -g pm2 &&
+                            pm2 stop app || true &&
+                            pm2 start index.js --name app
+                        '
                     """
                 }
             }
