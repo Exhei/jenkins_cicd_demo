@@ -224,6 +224,7 @@ This guide provides detailed instructions to configure a Jenkins CI/CD pipeline 
      ```
 
 2. **Apply Terraform**:
+   - Install AWS CLI. Follow instructions https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
    - Navigate to the Terraform directory:
      ```bash
      cd ~/git/jenkins_cicd_demo/terraform-cicd
