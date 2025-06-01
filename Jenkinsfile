@@ -20,10 +20,10 @@ pipeline {
                 sshagent(credentials: ['app-ec2-ssh']) {
                     sh """
                         scp -o StrictHostKeyChecking=no -r ./dist/* ec2-user@\${APP_SERVER_IP}:/home/ec2-user/app/
-                        ssh -o StrictHostKeyChecking=no ec2-user@\${APP_SERVER_IP} << 'ENDSSH'
+                        ssh -o StrictHostKeyChecking=no ec2-user@\${APP_SERVER_IP} << ENDSSH
                             sudo npm install -g pm2
                             pm2 stop all || true
-                            pm2 start /home/ec2-user/app/index.js --name app --save
+                            pm2 start /home/ec2-user/app/index.js --name app
                         ENDSSH
                     """
                 }
