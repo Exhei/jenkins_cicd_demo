@@ -28,7 +28,7 @@ pipeline {
                             npm install &&
                             sudo npm install -g pm2 &&
                             pm2 stop app || true &&
-                            pm2 start index.js --name app
+                            pm2 start dist/index.js --name app
                         '
                     """
                 }
