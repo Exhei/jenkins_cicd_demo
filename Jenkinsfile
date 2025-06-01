@@ -23,7 +23,7 @@ pipeline {
                         ssh -o StrictHostKeyChecking=no ec2-user@\${APP_SERVER_IP} << 'ENDSSH'
                             sudo npm install -g pm2
                             pm2 stop all || true
-                            pm2 start /home/ec2-user/app/index.js --name app
+                            pm2 start /home/ec2-user/app/index.js --name app --save
                         ENDSSH
                     """
                 }
