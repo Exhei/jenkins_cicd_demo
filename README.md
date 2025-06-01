@@ -247,6 +247,7 @@ This guide provides detailed instructions to configure a Jenkins CI/CD pipeline 
      ssh -i ~/cicd_demo.pem ec2-user@<jenkins_public_ip>
      sudo cat /var/lib/jenkins/secrets/initialAdminPassword
      ```
+   - Install the needed plugins for project.
 
 2. **Install Node.js**:
    - Already installed via Terraform `user_data` on the Jenkins server. Verify:
